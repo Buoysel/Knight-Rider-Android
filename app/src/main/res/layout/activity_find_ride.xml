@@ -1,0 +1,41 @@
+<android.support.constraint.ConstraintLayout
+
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:map="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    map:layout_constraintTop_toTopOf="parent"
+    map:layout_constraintBottom_toBottomOf="parent"
+    map:layout_constraintLeft_toLeftOf="parent"
+    map:layout_constraintRight_toRightOf="parent">
+
+    <fragment
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        tools:context="com.mgsu.knight_rider_android.FindRide"
+        map:layout_constraintTop_toBottomOf="@+id/searchBarLayout"
+        map:layout_constraintBottom_toBottomOf="parent"
+        map:layout_constraintLeft_toLeftOf="parent"
+        map:layout_constraintRight_toRightOf="parent"/>
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/searchBarLayout"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:background="@drawable/textbox_round"
+        android:focusableInTouchMode="true"
+        map:layout_constraintLeft_toLeftOf="parent"
+        map:layout_constraintRight_toRightOf="parent"
+        map:layout_constraintTop_toTopOf="parent">
+
+        <Spinner
+            android:id="@+id/searchBarInput"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="8dp" />
+    </android.support.design.widget.TextInputLayout>
+
+</android.support.constraint.ConstraintLayout>

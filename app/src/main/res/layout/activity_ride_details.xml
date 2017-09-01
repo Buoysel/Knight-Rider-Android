@@ -1,0 +1,408 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.mgsu.knight_rider_android.RideDetails">
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/rideDetailButtonPanel"
+        android:layout_width="0dp"
+        android:layout_height="120dp"
+        android:background="@drawable/ridelist_button_panel"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent">
+
+        <Button
+            android:id="@+id/rideDetailsButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="32dp"
+            android:layout_marginLeft="84dp"
+            android:layout_marginRight="84dp"
+            android:background="@drawable/button_green"
+            android:text="Default Button Text"
+            android:textColor="#FFFFFF"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent" />
+
+    </android.support.constraint.ConstraintLayout>
+
+
+
+    <ScrollView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:scrollbars="none"
+        app:layout_constraintBottom_toTopOf="@+id/rideDetailButtonPanel"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0">
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingBottom="32dp"
+            android:paddingLeft="32dp"
+            android:paddingRight="32dp"
+            android:paddingTop="32dp">
+
+            <android.support.constraint.ConstraintLayout
+                android:id="@+id/rideHeader"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent">
+
+                    <TextView
+                        android:id="@+id/originCityTextView"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:text="Origin"
+                        android:textAlignment="center"
+                        android:textSize="24sp" />
+
+                    <ImageView
+                        android:id="@+id/arrowImage"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:background="@drawable/purple_arrow" />
+
+                    <TextView
+                        android:id="@+id/destinationCityTextView"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:text="Destination"
+                        android:textAlignment="center"
+                        android:textSize="24sp" />
+
+                </LinearLayout>
+
+            </android.support.constraint.ConstraintLayout>
+
+            <android.support.constraint.ConstraintLayout
+                android:id="@+id/rideDetails"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/rideHeader">
+
+                <TextView
+                    android:id="@+id/pickupLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Pickup Location:"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    app:layout_constraintLeft_toLeftOf="@+id/meetingLocationTextView"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/meetingLocationTextView"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="32dp"
+                    android:text="Meeting Location"
+                    android:textSize="16sp"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/pickupLabel" />
+
+                <TextView
+                    android:id="@+id/originDetailTextView"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Origin Detail"
+                    android:textSize="16sp"
+                    app:layout_constraintLeft_toLeftOf="@id/meetingLocationTextView"
+                    app:layout_constraintRight_toRightOf="@id/meetingLocationTextView"
+                    app:layout_constraintTop_toBottomOf="@id/meetingLocationTextView" />
+
+                <ImageView
+                    android:id="@+id/originCircle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="16dp"
+                    android:background="@drawable/purple_circle"
+                    app:layout_constraintBottom_toBottomOf="@id/originDetailTextView"
+                    app:layout_constraintRight_toLeftOf="@id/originDetailTextView"
+                    app:layout_constraintTop_toTopOf="@id/originDetailTextView" />
+
+                <TextView
+                    android:id="@+id/originTimeTextView"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Origin Time - 0:00PM 01/01/01"
+                    android:textSize="14sp"
+                    app:layout_constraintLeft_toLeftOf="@id/originDetailTextView"
+                    app:layout_constraintRight_toRightOf="@id/originDetailTextView"
+                    app:layout_constraintTop_toBottomOf="@id/originDetailTextView" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_marginBottom="2dp"
+                    android:layout_marginTop="2dp"
+                    android:background="@drawable/purple_line"
+                    app:layout_constraintBottom_toTopOf="@+id/destinationCircle"
+                    app:layout_constraintLeft_toLeftOf="@id/originCircle"
+                    app:layout_constraintRight_toRightOf="@id/originCircle"
+                    app:layout_constraintTop_toBottomOf="@+id/originCircle" />
+
+                <TextView
+                    android:id="@+id/dropoffLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="54dp"
+                    android:text="Drop-off Location:"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    app:layout_constraintLeft_toLeftOf="@+id/originTimeTextView"
+                    app:layout_constraintTop_toBottomOf="@+id/originTimeTextView" />
+
+                <TextView
+                    android:id="@+id/destinationDetailTextView"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Destination Detail"
+                    android:textSize="16sp"
+                    app:layout_constraintLeft_toLeftOf="@+id/dropoffLabel"
+                    app:layout_constraintRight_toRightOf="@id/meetingLocationTextView"
+                    app:layout_constraintTop_toBottomOf="@+id/dropoffLabel" />
+
+                <ImageView
+                    android:id="@+id/destinationCircle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/purple_circle"
+                    app:layout_constraintBottom_toBottomOf="@id/destinationDetailTextView"
+                    app:layout_constraintLeft_toLeftOf="@id/originCircle"
+                    app:layout_constraintRight_toRightOf="@id/originCircle"
+                    app:layout_constraintTop_toTopOf="@id/destinationDetailTextView" />
+
+                <TextView
+                    android:id="@+id/destinationTimeTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Destination Time - 0:00PM 01/01/01"
+                    android:textSize="14sp"
+                    app:layout_constraintLeft_toLeftOf="@+id/destinationDetailTextView"
+                    app:layout_constraintTop_toBottomOf="@+id/destinationDetailTextView" />
+
+            </android.support.constraint.ConstraintLayout>
+
+            <android.support.constraint.ConstraintLayout
+                android:id="@+id/rideMap"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/rideDetails">
+
+                <TextView
+                    android:id="@+id/mapLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Map"
+                    android:textSize="18sp"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/mapMessage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Click the map to view more detail."
+                    android:textSize="14sp"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/mapLabel" />
+
+                <fragment
+                    android:id="@+id/rideMapView"
+                    android:name="com.google.android.gms.maps.SupportMapFragment"
+                    android:layout_width="0dp"
+                    android:layout_height="150dp"
+                    android:layout_marginTop="16dp"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/mapLabel"
+                    tools:context="com.mgsu.knight_rider_android.FindRide" />
+
+            </android.support.constraint.ConstraintLayout>
+
+            <android.support.constraint.ConstraintLayout
+                android:id="@+id/rideVehicle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/rideMap">
+
+                <TextView
+                    android:id="@+id/carLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Car"
+                    android:textSize="18sp"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:background="@drawable/button_purple"
+                    android:orientation="vertical"
+                    android:paddingBottom="10dp"
+                    android:paddingLeft="32dp"
+                    android:paddingRight="32dp"
+                    android:paddingTop="10dp"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/carLabel">
+
+                    <TextView
+                        android:id="@+id/vehicleNameTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Vehicle Name"
+                        android:textColor="#FFFFFF"
+                        android:textSize="24sp"
+                        tools:layout_editor_absoluteX="96dp"
+                        tools:layout_editor_absoluteY="1872dp" />
+
+                    <TextView
+                        android:id="@+id/vehicleYearTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Vehicle Year"
+                        android:textColor="#FFFFFF"
+                        android:textSize="24sp"
+                        app:layout_constraintTop_toBottomOf="@+id/vehicleNameTextView"
+                        tools:layout_editor_absoluteX="96dp" />
+
+                </LinearLayout>
+
+
+            </android.support.constraint.ConstraintLayout>
+
+            <android.support.constraint.ConstraintLayout
+                android:id="@+id/rideDriver"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/rideVehicle">
+
+                <TextView
+                    android:id="@+id/driverLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Driver"
+                    android:textSize="18sp"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:id="@+id/driverImage"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="16dp"
+                    android:background="@drawable/benny"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/driverLabel" />
+
+            </android.support.constraint.ConstraintLayout>
+
+            <android.support.constraint.ConstraintLayout
+                android:id="@+id/ridePassengers"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/rideDriver">
+
+                <TextView
+                    android:id="@+id/passengersLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Passengers"
+                    android:textSize="18sp"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+
+                <!-- Find the correct method to add passenger images dynamically. Do not add them
+                     manually like this! -->
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/passengersRecycler"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/passengersLabel">
+
+                </android.support.v7.widget.RecyclerView>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:background="@drawable/button_purple"
+                    android:orientation="vertical"
+                    android:paddingBottom="10dp"
+                    android:paddingLeft="32dp"
+                    android:paddingRight="32dp"
+                    android:paddingTop="8dp"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/passengersRecycler">
+
+                    <TextView
+                        android:id="@+id/seatNumberTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="00"
+                        android:textColor="#FFFFFF"
+                        android:textSize="24sp" />
+
+                    <TextView
+                        android:id="@+id/availableSeatsLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Seats available"
+                        android:textColor="#FFFFFF"
+                        android:textSize="18sp" />
+
+                </LinearLayout>
+
+            </android.support.constraint.ConstraintLayout>
+
+        </android.support.constraint.ConstraintLayout>
+
+    </ScrollView>
+</android.support.constraint.ConstraintLayout>

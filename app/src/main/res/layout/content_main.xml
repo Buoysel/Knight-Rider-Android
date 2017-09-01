@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="com.mgsu.knight_rider_android.MainActivity"
+    tools:showIn="@layout/app_bar_main">
+
+    <TextView
+        android:id="@+id/noRidesHeader"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="32dp"
+        android:layout_marginRight="32dp"
+        android:alpha=".6"
+        android:text="It looks like you don't have any rides yet."
+        android:textAlignment="textStart"
+        android:textSize="24dp"
+        android:textStyle="bold"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/rideButtonPanel"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.38" />
+
+    <TextView
+        android:id="@+id/noRidesFooter"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="32dp"
+        android:layout_marginRight="32dp"
+        android:alpha=".6"
+        android:text="Tap the Create Ride or Find Ride button to get started"
+        android:textAlignment="textStart"
+        android:textSize="24dp"
+        android:textStyle="bold"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/rideButtonPanel"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/noRidesHeader"
+        app:layout_constraintVertical_bias="0.23000002" />
+
+    <ListView
+        android:id="@+id/rideListView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:divider="@android:color/transparent"
+        android:scrollbars="none"
+        app:layout_constraintBottom_toTopOf="@+id/rideButtonPanel"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/rideButtonPanel"
+        android:layout_width="0dp"
+        android:layout_height="120dp"
+        android:background="@drawable/ridelist_button_panel"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent">
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/findRideButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="32dp"
+        android:layout_marginLeft="32dp"
+        android:layout_marginRight="16dp"
+        android:background="@drawable/button_green"
+        android:onClick="startFindRide"
+        android:text="Find Ride"
+        android:textColor="#FFFFFF"
+        app:layout_constraintBottom_toBottomOf="@+id/rideButtonPanel"
+        app:layout_constraintLeft_toLeftOf="@+id/rideButtonPanel"
+        app:layout_constraintRight_toLeftOf="@+id/createRideButton" />
+
+    <Button
+        android:id="@+id/createRideButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="32dp"
+        android:background="@drawable/button_green"
+        android:onClick="startCreateRide"
+        android:text="Create Ride"
+        android:textColor="#FFFFFF"
+        app:layout_constraintBottom_toBottomOf="@+id/findRideButton"
+        app:layout_constraintLeft_toRightOf="@+id/findRideButton"
+        app:layout_constraintRight_toRightOf="@+id/rideButtonPanel" />
+
+</android.support.constraint.ConstraintLayout>

@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">Knight Rider</string>
+    <string name="title_activity_main">Knight Rider</string>
+    <string name="title_user_login">Log In</string>
+    <string name="title_user_registration">Registration</string>
+    <string name="title_create_ride">Create Ride</string>
+    <string name="title_find_ride">Find Ride</string>
+    <string name="title_profile">My Profile</string>
+    <string name="title_create_car">Create A Car</string>
+    <string name="title_ride_details">Details</string>
+    <string name="title_messages">Messages</string>
+
+    <string name="url">http://knightrider.mgaitec.net:8080/ridesharing</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <!--<string name="action_settings">Settings</string>-->
+</resources>

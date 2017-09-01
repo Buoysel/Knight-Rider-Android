@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="campus_array">
+        <item>Macon Campus</item>
+        <item>Warner Robins Campus</item>
+        <item>Dublin Campus</item>
+        <item>Cochran Campus</item>
+        <item>Eastman Campus</item>
+    </string-array>
+
+    <string-array name="campus_addresses">
+        <item>100 University Pkwy, Macon, GA 31206</item>
+        <item>100 University Boulevard, Warner Robins, GA 31093</item>
+        <item>1900 Bellevue Ave, Dublin, GA 31021</item>
+        <item>1100 SE 2nd St, Cochran, GA 31014</item>
+        <item>71 Airport Rd, Eastman, GA 31023</item>
+    </string-array>
+</resources>

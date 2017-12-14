@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- NOTE TO FUTURE DEVELOPER:
+    I know the layout of the item_review in Android Studio looks terrible, but this is not
+    how it looks in the emulator or an actual device. I made a RatingBar that uses custom images,
+    but because of how styles works, the RatingBar always shows up looking bigger on an actual device
+    than how it does in Android Studio. To fix this, i cut down the scaleX and scaleY of the rating bar,
+    so it is reduced to a more practical size.
+
+    Don't trust what the studio shows you, always test any changes with a custom style in either
+    the emulator or an actual device.
+-->
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:id="@+id/ratingAndTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <RatingBar
+            android:id="@+id/ratingBar"
+            style="@style/btnStarRatingBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:isIndicator="true"
+            android:numStars="5"
+            android:scaleX=".50"
+            android:scaleY=".50"
+            android:layout_marginLeft="-63dp"
+            android:layout_marginTop="-8dp"
+            android:layout_marginRight="-48dp"/>
+
+        <TextView
+            android:id="@+id/dateTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="January 1, 2001" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/commentTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:text="This is a comment" />
+
+
+</LinearLayout>

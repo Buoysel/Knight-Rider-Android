@@ -3,4 +3,8 @@
     <color name="colorPrimary">#633393</color>
     <color name="colorPrimaryDark">#452366</color>
     <color name="colorAccent">#3bb778</color>
+    <color name="colorPurpleText">#9968ca</color>
+    <color name="darkBackground">#262626</color>
+    <color name="buttonText">#FFFFFF</color>
+    <color name="linkText">#2a8ed0</color>
 </resources>

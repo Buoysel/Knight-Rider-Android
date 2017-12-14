@@ -1,0 +1,275 @@
+Okay, first I'll start off by listing all of the App's Activites, and then list the classes or layouts used by those activites:
+
+Activites:
+   * Login:
+        -UserLogin.java
+            onCreate()
+            login()
+            login(view)
+            hasTokenExpired()
+            setTotkenExpirationDate()
+            register()
+        -activity_user_login.xml
+            loginButton
+            registerTextLink
+
+   * Registration:
+        -UserRegistration.java
+            onCreate()
+            onBackPressed()
+            openTerms()
+            ~nextButtonClick(view)~ UNUSED
+            register()
+            createUser(values)
+            ~createCar(values)~ UNUSED
+            ~getUserId(username, password)~ UNUSED
+            AccountFragment
+                onCreateView()
+                getAccoutnValues(): HashMap
+            ~ContactFragment~ UNUSED
+                onCreateView()
+                getContactValues(): HashMap 
+            ~VehicleFragment~ UNUSUED
+                onCreateView()
+                getCarValues(): HashMap 
+            SectionsPagerAdapter
+                getItem(): Fragment 
+                getCount: int
+        -activity_user_registration.xml
+            nextButton 
+            termsTextView
+        -fragment_user_registration_account.xml
+        -fragment_user_registration_contact.xml (Unused) 
+        -fragment_user_registration_vehicle.xml (Unused)
+
+    * List of Rides, or Main Activity 
+        -MainActivity.java
+            onCreate()
+            onStart()
+            setupNavigation()
+            getUserInformation(v)
+            getAllRides()
+            startFindRide()
+            startCreateRide()
+            onBackPressed()
+            onNavigationItemSelected(item)
+            clearUserData()
+            RideAdapter
+        -activity_main.xml 
+        -nav_header_main.xml 
+        -app_bar_main.xml 
+        -activity_main_drawer.xml 
+            (Contains the drawer's nav links)
+        -content_main.xml 
+            findRideButton
+            createRideButton
+        -item_ridelist.xml
+
+    * User Profile 
+        -The current user:
+            ~ProfileMain.java
+                onCreate()
+                onOptionsItemSelected()
+                showPersonal()
+                showVehicle()
+                changeTabColor()
+            ~ProfilePersonal.java 
+                onCreateView()
+                onStart()
+                getProfilePic
+                onActivityResult()
+                uploadNewProfilePic(encoded)
+                updateUser()
+                getUserInfo()
+                setProfileLables(v)
+                round()
+            ~ProfileVehicle.java 
+                onCreateView()
+                onStart()
+                getAllCars()
+                VehicleAdapter
+                    VehicleAdapter
+                    getView()
+            ~activity_profile_main.xml
+                personalTab
+                vehicleTab
+            ~fragment_profile_personal.xml
+                userImageEdit 
+                ratingsBar
+                ratingsTotal
+                saveButton
+            ~fragment_profile_vehicle.xml
+                createCarButton
+            ~item_profile_vehicle.xml
+                vehicleNameEdit
+        -Another user: 
+            ~ProfileAlt.java 
+            ~activity_profile_alt.xml 
+
+    * Creating a Car 
+        -CreateCar.java 
+            onCreate()
+            onOptionsItemSelected()
+            createEditCarActivity()
+            getCarValues()
+            addCar()
+            updateCar()
+            deleteCar()
+        -activity_create_car.xml 
+            createCarButton
+            deleteCarButton
+
+    * Creating a Ride 
+        -CreateRide.java
+            onCreate()
+            onOptionsItemSelected()
+            saveRide()
+            setupSpinners()
+            GeocodeAddressTask
+                onPreExecute()
+                doInBackground()
+                onPostExecute()
+            CreateRideTask
+                onPreExecute()
+                doInBackground()
+            DriverLocationListener
+                onLocationChanged()
+            showDatePickerDialog()
+            showTimePickerDialog()
+            TimePickerFragment
+                onCreateDialog()
+                onTimeSet()
+            DatePickerFragmet
+                onCreateDialog()
+                onDateSet()
+            setDateTimeText()
+        -activity_create_ride.xml
+            dateButton (unnamed)
+            timeButton (unnamed)
+            saveButton
+
+    * Finding a Ride 
+        -FindRide.java
+            onCreate()
+            onResume()
+            clearMarkers()
+            setUpSearchBar()
+            findAllRides()
+            findAllRides(campus)
+            ~GeocodeAddressTask~ UNUSED
+                onPreExecute()
+                doInBackground()
+                onPostExecute()
+            ~FindMatchingRidesTask~ UNUSED 
+                onPreExecute()
+                doInBackground()
+                onPostExecute()
+            onOptionsItemSelected
+            onRequestPermissionsResult
+            onMapReady
+            buildGoogleApiClient()
+            onLocationChanged()
+            onConnected
+            checkLocationPermission()
+        -activity_find_ride.xml
+            searhBarInput
+        -item_ride_preview.xml
+
+    * Viewing a Ride's Details
+        -RideDetails.java 
+            onCreate()
+            onOptionsItemSelected()
+            onMapReady()
+            setupViews()
+            getRideDetails()
+            setMapDirections()
+            showPassengers()
+            setUpButton()
+            joinLeaveRide(method)
+            cancelRide()
+            startLocationService()
+        -activity_ride_details.xml 
+            driverImage
+            passengersRecycler
+            rideDetailsButton
+        -item_passenger.xml
+
+    * Reviews
+        -Reviews.java 
+            onCreate()
+            onOptionsItemSelected()
+            getAllReviews()
+            ReviewAdapter
+                ReviewAdapter()
+                getView()
+        -activity_reviews.java 
+        ~item_review.xml
+
+    * Leaving a Review 
+        -RateRide.java
+            onCreate()
+            getProfilePhoto()
+            submitReview()
+            cancel()
+        -activity_rate_ride.xml 
+            submitButton
+            cancelText
+
+    * Messages
+        -All Messages 
+            ~Messages.java
+                onCreate()
+                onOptionsItemSelected()
+                getAllMessages()
+                MessagesAdapter
+                    MessagesAdapter()
+                    getView()
+            ~activity_messages.xml 
+            ~item_message_preview.xml 
+        -One Thread 
+            ~SingleMessage.java
+                onCreate()
+                onOptionsItemSelected()
+                getConversation()
+                sendMessage()
+                MessageAdapater
+            ~activity_single_message.xml 
+                sendButton
+            ~item_message_incoming.xml
+            ~item_message_outgoing.xml
+
+    * Terms and Conditions 
+        -TermsAndConditions.java 
+            onCreate()
+            onOptionsItemSelected()
+        -activity_terms_and_conditions.xml 
+        -terms_and_conditions.xml
+
+Services:
+    * TripLocationService.java
+        onStartComand()
+        onCreate()
+        onDestroy()
+        onBind()
+        TripLocationListener
+            onLocationChanged()
+            postLocationToServer(lat, lng, speed)
+            completeTrip()
+            displayNotification()
+
+Other Classes:
+    * Validator.java 
+        checkUserName()
+        checkPassword(v1, v2)
+        checkPassword(v, conext)
+        checkEmail()
+        checkName()
+        checkAddress()
+        checkZip()
+        checkPhone()
+        checkCarValues()
+        checkRideValues()
+    * DownloadImageTask.java
+        DownloadImageTask(bmImage)
+        doInBackground()
+        onPostExecute()

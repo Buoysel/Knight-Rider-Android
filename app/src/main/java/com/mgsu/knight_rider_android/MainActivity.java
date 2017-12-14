@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -37,9 +36,7 @@ import com.android.volley.toolbox.Volley;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -56,6 +53,9 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (getIntent().getBooleanExtra("EXIT", false)) {
+            finish();
+        }
 
         prefs = this.getSharedPreferences(
                 "com.mgsu.knight_rider_android", Context.MODE_PRIVATE);
@@ -72,28 +72,6 @@ public class MainActivity extends AppCompatActivity
         toggle.syncState();
 
         setupNavigation();
-
-        Button createRideButton = (Button) findViewById(R.id.createRideButton);
-        Button findRideButton = (Button) findViewById(R.id.findRideButton);
-        createRideButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startCreateRide();
-            }
-        });
-
-        findRideButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startFindRide();
-            }
-        });
-
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
 
         getAllRides();
     }
@@ -151,7 +129,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void getAllRides() {
-        final ArrayList<HashMap> rides = new ArrayList<HashMap>();
+        final ArrayList<HashMap> rides = new ArrayList<>();
 
         String url = getString(R.string.url) + "/users/" + userId + "/trips";
         RequestQueue queue = Volley.newRequestQueue(this);
@@ -163,7 +141,7 @@ public class MainActivity extends AppCompatActivity
                         rides.clear();
                         try {
                             for (int i = response.length(); i > 0; i--) {
-                                HashMap<String, String> d = new HashMap<String, String>();
+                                HashMap<String, String> d = new HashMap<>();
                                 JSONObject ride = response.getJSONObject(i-1);
                                 d.put("tripId", ride.getString("id"));
                                 d.put("originCity", ride.getString("originCity"));
@@ -176,7 +154,13 @@ public class MainActivity extends AppCompatActivity
                                 String departureTime = timeFormat.format(new Date(timeEpoch));
                                 d.put("departureTime", departureTime);
 
-                                d.put("meetingLocation", ride.getString("meetingLocation"));
+                                if (ride.getString("meetingLocation").equals(null) ||
+                                    ride.getString("meetingLocation").equals("null"))
+
+                                    d.put("meetingLocation", ride.getString("originCity"));
+                                else
+                                    d.put("meetingLocation", ride.getString("meetingLocation"));
+
                                 d.put("availableSeats", ride.getString("availableSeats"));
                                 d.put("messageNumber", String.valueOf(ride.getJSONArray("messages").length()));
 
@@ -237,11 +221,11 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-    public void startFindRide() {
+    public void startFindRide(View view) {
         startActivity(new Intent("com.mgsu.knight_rider.android.FindRide"));
     }
 
-    public void startCreateRide() {
+    public void startCreateRide(View view) {
         startActivity(new Intent("com.mgsu.knight_rider_android.CreateRide"));
     }
 
@@ -251,7 +235,10 @@ public class MainActivity extends AppCompatActivity
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            super.onBackPressed();
+            Intent intent = new Intent(MainActivity.this, MainActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            intent.putExtra("EXIT", true);
+            startActivity(intent);
         }
     }
 
@@ -268,6 +255,7 @@ public class MainActivity extends AppCompatActivity
                 startActivity(new Intent("com.mgsu.knight_rider_android.Messages"));
                 break;
             case R.id.nav_terms:
+                startActivity(new Intent("com.mgsu.knight_rider_android.TermsAndConditions"));
                 break;
             case R.id.nav_logout:
                 clearUserData();
@@ -281,21 +269,21 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void clearUserData() {
-        SharedPreferences prefs = this.getSharedPreferences(
-                "com.mgsu.knight_rider_android", Context.MODE_PRIVATE);
         prefs.edit().putString("knight-rider-token", null).apply();
         prefs.edit().putString("knight-rider-userId", null).apply();
-        prefs.edit().putString("knight-rider-username", null).apply();
-        prefs.edit().putString("knight-rider-password", null).apply();
-        prefs.edit().putLong("knight-rider-token-expdate", 0).apply();
+//        prefs.edit().putString("knight-rider-username", null).apply();
+//        prefs.edit().putString("knight-rider-password", null).apply();
+//        prefs.edit().putLong("knight-rider-token-expdate", 0).apply();
+        if (TripLocationService.isActive)
+            stopService(new Intent(this, TripLocationService.class));
     }
 
     private class RideAdapter extends ArrayAdapter<ArrayList<HashMap>> {
 
-        ArrayList<HashMap> rides = new ArrayList<HashMap>();
+        ArrayList<HashMap> rides = new ArrayList<>();
 
         RideAdapter(Context context, ArrayList rides) {
-            super(context, R.layout.ridelist_item, rides);
+            super(context, R.layout.item_ridelist, rides);
             this.rides = rides;
         }
 
@@ -303,7 +291,7 @@ public class MainActivity extends AppCompatActivity
         public View getView(int position, View convertView, ViewGroup parent) {
             LayoutInflater rideInflater = LayoutInflater.from(getContext());
 
-            View rideView = rideInflater.inflate(R.layout.ridelist_item, parent, false);
+            View rideView = rideInflater.inflate(R.layout.item_ridelist, parent, false);
 
             HashMap singleRide = rides.get(position);
 

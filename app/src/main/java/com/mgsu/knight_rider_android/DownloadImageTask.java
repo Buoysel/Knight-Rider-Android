@@ -35,13 +35,7 @@ public class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
 
     protected void onPostExecute(Bitmap result) {
         if (result != null) {
-            removeBackground();
             bmImage.setImageBitmap(result);
         }
-    }
-
-    @TargetApi(16)
-    private void removeBackground() {
-        bmImage.setBackground(null);
     }
 }

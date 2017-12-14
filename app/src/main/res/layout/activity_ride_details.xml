@@ -201,15 +201,6 @@
                     app:layout_constraintRight_toRightOf="@id/originCircle"
                     app:layout_constraintTop_toTopOf="@id/destinationDetailTextView" />
 
-                <TextView
-                    android:id="@+id/destinationTimeTextView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Destination Time - 0:00PM 01/01/01"
-                    android:textSize="14sp"
-                    app:layout_constraintLeft_toLeftOf="@+id/destinationDetailTextView"
-                    app:layout_constraintTop_toBottomOf="@+id/destinationDetailTextView" />
-
             </android.support.constraint.ConstraintLayout>
 
             <android.support.constraint.ConstraintLayout
@@ -331,7 +322,7 @@
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:layout_marginTop="16dp"
-                    android:background="@drawable/benny"
+                    app:srcCompat="@drawable/profile"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/driverLabel" />
 

@@ -45,7 +45,7 @@ public class ProfileVehicle extends Fragment {
         createCarButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startCreateCar();
+                startActivity(new Intent("com.mgsu.knight_rider_android.CreateCar"));
             }
         });
 
@@ -60,13 +60,9 @@ public class ProfileVehicle extends Fragment {
         getAllCars();
     }
 
-    public void startCreateCar() {
-        startActivity(new Intent("com.mgsu.knight_rider_android.CreateCar"));
-    }
+    private void getAllCars() {
 
-    public void getAllCars() {
-
-        final ArrayList<HashMap> vehicles = new ArrayList<HashMap>();
+        final ArrayList<HashMap> vehicles = new ArrayList<>();
 
         final SharedPreferences prefs = getActivity().getSharedPreferences(
                 "com.mgsu.knight_rider_android", Context.MODE_PRIVATE);
@@ -82,11 +78,14 @@ public class ProfileVehicle extends Fragment {
                         vehicles.clear();
                         try {
                             for (int i = 0; i < response.length(); i++) {
-                                HashMap<String, String> d = new HashMap<String, String>();
+                                HashMap<String, String> d = new HashMap<>();
                                 JSONObject car = response.getJSONObject(i);
+                                d.put("id", car.getString("id"));
                                 d.put("maker", car.getString("maker"));
                                 d.put("type", car.getString("type"));
                                 d.put("capacity", car.getString("capacity"));
+                                d.put("licensePlate", car.getString("licensePlate"));
+                                d.put("color", car.getString("color"));
 
                                 vehicles.add(d);
                             }
@@ -131,10 +130,10 @@ public class ProfileVehicle extends Fragment {
 
     private class VehicleAdapter extends ArrayAdapter<ArrayList<HashMap>> {
 
-        ArrayList<HashMap> vehicles = new ArrayList<HashMap>();
+        ArrayList<HashMap> vehicles = new ArrayList<>();
 
         public VehicleAdapter(Context context, ArrayList vehicles) {
-            super(context, R.layout.profile_vehicle_item, vehicles);
+            super(context, R.layout.item_profile_vehicle, vehicles);
             this.vehicles = vehicles;
         }
 
@@ -142,27 +141,35 @@ public class ProfileVehicle extends Fragment {
         public View getView(int position, View convertView, ViewGroup parent) {
             LayoutInflater vehicleInflater = LayoutInflater.from(getContext());
 
-            View vehicleView = vehicleInflater.inflate(R.layout.profile_vehicle_item, parent, false);
+            View vehicleView = vehicleInflater.inflate(R.layout.item_profile_vehicle, parent, false);
 
-            HashMap singleVehicle = vehicles.get(position);
+            final HashMap singleVehicle = vehicles.get(position);
 
+            TextView editLabel = (TextView) vehicleView.findViewById(R.id.vehicleNameEdit);
+            editLabel.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent i = new Intent("com.mgsu.knight_rider_android.CreateCar");
+                    boolean isEditing = true;
+                    i.putExtra("isEditing", isEditing);
+                    i.putExtra("carId", singleVehicle.get("id").toString());
+                    startActivity(i);
+                }
+            });
             TextView nameLabel = (TextView) vehicleView.findViewById(R.id.vehicleNameLabel);
             TextView makeValue = (TextView) vehicleView.findViewById(R.id.vehicleMakeValue);
             TextView modelValue = (TextView) vehicleView.findViewById(R.id.vehicleModelValue);
-//            TextView yearValue = (TextView) vehicleView.findViewById(R.id.vehicleYearValue);
             TextView seatsValue = (TextView) vehicleView.findViewById(R.id.vehicleSeatsValue);
+            TextView colorValue = (TextView) vehicleView.findViewById(R.id.vehicleColorValue);
+            //ImageView licenseImage = (ImageView) vehicleView.findViewById(R.id.vehicleLicenseImage);
 
             nameLabel.setText(singleVehicle.get("maker").toString());
             makeValue.setText(singleVehicle.get("maker").toString());
             modelValue.setText(singleVehicle.get("type").toString());
             seatsValue.setText(singleVehicle.get("capacity").toString());
-
-//            nameLabel.setText(singleVehicle.get("name").toString());
-//            makeValue.setText(singleVehicle.get("make").toString());
-//            modelValue.setText(singleVehicle.get("model").toString());
-//            yearValue.setText(singleVehicle.get("year").toString());
-//            seatsValue.setText(singleVehicle.get("seats").toString());
-
+            colorValue.setText(singleVehicle.get("color").toString());
+//            new DownloadImageTask(licenseImage)
+//                    .execute(singleVehicle.get("licensePlate").toString());
             return vehicleView;
         }
     }

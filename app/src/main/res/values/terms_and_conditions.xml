@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="terms">
+        <![CDATA[
+        <h1>Terms &amp; Conditions:</h1>
+
+        <p>
+            KnightRider is intended to assist and enable members of the MGA university community in
+            making carpooling arrangements. This program was initiated in response to calls from
+            Georgia state agencies and the Board of Regents to take positive measures to save fuel
+            and energy costs. Use of this web resource is voluntary and is limited to
+            <b><em>faculty, staff and students</em></b> of MGA. Only persons with a valid,
+            current MGA  e-mail account will be permitted to register as subscribers to this
+            website/app or to post and view postings concerning ride-sharing opportunities.
+        </p>
+
+        <p>
+            This website provides a means for MGA faculty, staff and students to communicate easily
+            regarding ride-sharing and carpooling opportunities based on compatible work and class
+            schedules, points of origin, and destinations. <b><em>It is intended for ride-sharing to and
+            from work or class and for work-related travel.</em></b> Once a potential participant is
+            identified, <b><em>specific arrangements should be handled by direct communication within the
+            website/app portal. This website is not intended for ride-sharing arrangements for
+            travel not related to employment or enrollment at MGA, which should be made separately.
+            </em></b>
+        </p>
+
+        <p>
+            Employees should understand that <b><em>travel to and from the workplace is generally considered
+            not to be within the scope of employment and injuries to persons or property arising while
+            going to and from work are not covered by university liability insurance.</em></b> Similarly,
+            <b><em>students who share rides to class or elsewhere on campus do so voluntarily and at their
+            own risk.</em></b> While state employees are being encouraged to carpool to and from work and to
+            shares rides on work-related assignments, and participants will gain personally in terms
+            of cost savings, it should be recognized that <b><em>potential damages or injuries incurred due
+            to accident or otherwise are not being underwritten or insured by the State of Georgia,
+            the Board of Regents, or Middle Georgia State University.</em></b> The risk to an individual
+            employee or student who participates in a carpool or other ride-sharing arrangement is
+            comparable to the risk he or she would incur when offering or accepting a ride to or from
+            a friend for personal travel. Participants should exercise ordinary prudence and satisfy
+            themselves that other participating drivers are licensed, competent drivers and that
+            vehicles are appropriately insured.
+        </p>
+
+        <p>
+            MGA will, to the best of its ability, maintain the privacy of information posted on this
+            website.app. Users acknowledge that information posted on the site may be viewed by other
+            authorized registrants. Users further acknowledge the risk that information posted on the
+            site may be viewed by unauthorized users gaining access to authorized accounts. Posting of
+            information should be limited to the express purposes of the rideshare program. <b><em>Posting of
+            obscene, pornographic or harassing messages is strictly prohibited.</em></b> Concerns about handling
+            or content of site postings should be communicated promptly to the webmaster at
+            mgaknightriders@mga.edu
+        </p>
+
+        <p>
+            <b><em>By registering as a user of the MGA Knight Rider Rideshare website/app, each registrant
+            agrees to release and hereby releases the Board of Regents, Middle Georgia State University,
+            and their officers, employees and agents from any and all liability, damages and costs,
+            including attorney's fees, arising from the use of this website/app or participation in
+            carpooling or ride-sharing arrangements made in whole or in part through the use of this
+            website/app.</em></b>
+        </p>
+        ]]>
+    </string>
+</resources>

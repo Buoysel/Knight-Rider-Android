@@ -57,8 +57,6 @@ public class Messages extends AppCompatActivity {
         }
 
         getAllMessages();
-
-
     }
 
     @Override
@@ -160,7 +158,7 @@ public class Messages extends AppCompatActivity {
         public View getView(int position, View convertView, ViewGroup parent) {
             LayoutInflater messageInflater = LayoutInflater.from(getContext());
 
-            View messageView = messageInflater.inflate(R.layout.message_preview_item, parent, false);
+            View messageView = messageInflater.inflate(R.layout.item_message_preview, parent, false);
 
             final HashMap singleMessage = messages.get(position);
 

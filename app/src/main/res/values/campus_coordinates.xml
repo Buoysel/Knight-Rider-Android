@@ -7,12 +7,50 @@
         <item>Cochran Campus</item>
         <item>Eastman Campus</item>
     </string-array>
-
     <string-array name="campus_addresses">
         <item>100 University Pkwy, Macon, GA 31206</item>
         <item>100 University Boulevard, Warner Robins, GA 31093</item>
         <item>1900 Bellevue Ave, Dublin, GA 31021</item>
         <item>1100 SE 2nd St, Cochran, GA 31014</item>
         <item>71 Airport Rd, Eastman, GA 31023</item>
+    </string-array>
+
+    <string-array name="macon_pickup_locations">
+        <item>Charles H. Jones Building</item>
+        <item>Student Life Center</item>
+    </string-array>
+    <string-array name="macon_pickup_coordinates">
+        <item>32.808522, -83.734880</item>
+        <item>32.810441, -83.732000</item>
+    </string-array>
+
+    <string-array name="warner_robins_pickup_locations">
+        <item>Nola Brantley Library</item>
+    </string-array>
+    <string-array name="warner_robins_pickup_coordinates">
+        <item>32.618181, -83.607823</item>
+    </string-array>
+
+    <string-array name="dublin_pickup_locations">
+        <item>Dublin Center Library Building</item>
+    </string-array>
+    <string-array name="dublin_pickup_coordinates">
+        <item>32.533090, -82.935869</item>
+    </string-array>
+
+    <string-array name="cochran_pickup_locations">
+        <item>Memorial Hall</item>
+        <item>Alderman Hall</item>
+    </string-array>
+    <string-array name="cochran_pickup_coordinates">
+        <item>32.380908, -83.346641</item>
+        <item>32.379058, -83.345176</item>
+    </string-array>
+
+    <string-array name="eastman_pickup_locations">
+        <item>Main Campus Building</item>
+    </string-array>
+    <string-array name="eastman_pickup_coordinates">
+        <item>32.207927, -83.127840</item>
     </string-array>
 </resources>

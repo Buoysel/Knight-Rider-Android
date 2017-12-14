@@ -5,22 +5,20 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.location.Address;
-import android.location.Geocoder;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
@@ -31,7 +29,6 @@ import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonArrayRequest;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.location.LocationListener;
@@ -51,34 +48,53 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
+
+import static java.util.concurrent.ThreadLocalRandom.*;
 
 public class FindRide extends AppCompatActivity implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
         LocationListener {
 
+    private RequestQueue queue;
+    private SharedPreferences prefs;
+
     private GoogleMap mMap;
     private GoogleApiClient client;
     private LocationRequest locationRequest;
-    private Location lastLocation;
     private Marker currentLocationMarker;
     public static final int REQUEST_LOCATION_CODE = 99;
 
+    /* Offset Markers in with the same  */
+    private ArrayList<double[]> coordinatesList;
+    private final double MARKER_OFFSET = 0.000150;
+
+
     private double userLat, userLng;
 
-    private HashMap<Marker, Integer> markers;
+    private HashMap<Marker, HashMap<String, String>> markers;
+    private HashMap<String, String> markerValues;
 
-    String selectedCampus = "";
+    private String selectedCampus = "";
+
+    private TextInputEditText searchBarInput;
+    private String searchInput;
+    private String storedAddress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_find_ride);
+
+        queue = Volley.newRequestQueue(this);
+        prefs = this.getSharedPreferences(
+                "com.mgsu.knight_rider_android", Context.MODE_PRIVATE);
+
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             checkLocationPermission();
@@ -95,7 +111,31 @@ public class FindRide extends AppCompatActivity implements OnMapReadyCallback,
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
 
+//        searchBarInput = (TextInputEditText)findViewById(R.id.searchBarInput);
+//        searchBarInput.setOnEditorActionListener(new TextInputEditText.OnEditorActionListener() {
+//            @Override
+//            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+//                if (actionId == EditorInfo.IME_ACTION_DONE)
+//                {
+//                    if (mMap != null)
+//                        mMap.clear();
+//                    GeocodeAddressTask task = new GeocodeAddressTask();
+//                    task.execute();
+//                }
+//                return false;
+//            }
+//        });
         setUpSearchBar();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
+    private void clearMarkers() {
+        if (mMap != null)
+            mMap.clear();
     }
 
     private void setUpSearchBar() {
@@ -115,15 +155,14 @@ public class FindRide extends AppCompatActivity implements OnMapReadyCallback,
         searchSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (mMap != null)
-                    mMap.clear();
                 switch (position) {
                     case 0: //Selected the "Where to?" item
-                        findAllRides();
+                        selectedCampus = "";
+                        findAllRides(selectedCampus);
                         break;
                     default: //Everything else:
                         selectedCampus = searchSpinner.getSelectedItem().toString();
-                        findAllRides();
+                        findAllRides(selectedCampus);
                         selectedCampus = "";
                         break;
                 }
@@ -136,62 +175,144 @@ public class FindRide extends AppCompatActivity implements OnMapReadyCallback,
         });
     }
 
-    private void findAllRides() {
-        findAllRides(selectedCampus);
-    }
-
     private void findAllRides(final String campus) {
+        clearMarkers();
+        coordinatesList = new ArrayList<>();
 
-        final SharedPreferences prefs = this.getSharedPreferences(
-                "com.mgsu.knight_rider_android", Context.MODE_PRIVATE);
-
-        RequestQueue queue = Volley.newRequestQueue(this);
         String url = getString(R.string.url) + "/trips";
 
-        JsonArrayRequest findTripRequest = new JsonArrayRequest(Request.Method.GET, url, (String)null,
+        JsonArrayRequest findTripRequest = new JsonArrayRequest(Request.Method.GET, url,
                 new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response) {
-                        markers = new HashMap<Marker, Integer>();
-                        for (int i = 0; i < response.length(); i++) {
-                            try {
+                        markers = new HashMap<>();
+                        try {
+                            for (int i = 0; i < response.length(); i++) {
                                 JSONObject ride = response.getJSONObject(i);
+                                markerValues = new HashMap<>();
 
-                                VolleyLog.d(response.getJSONObject(i).toString());
-                                double latitude = ride.getDouble("originLatitude");
-                                double longitude = ride.getDouble("originLongitude");
-                                int tripId = ride.getInt("id");
+                                //Do not show trips that are past their departure time.
+                                if (ride.getLong("departureTime") < System.currentTimeMillis())
+                                    continue;
+
+                                //Do not show completed trips
+                                if (ride.getBoolean("completed"))
+                                    continue;
 
                                 //Skip this ride if it's not what the user searched for.
                                 if (!campus.equals(""))
                                     if (!campus.contains(ride.getString("destCity")))
                                         continue;
 
-                                LatLng latLng = new LatLng(latitude, longitude);
+                                VolleyLog.d(response.getJSONObject(i).toString());
+                                double latitude;
+                                double longitude;
+                                try {
+                                    latitude = setMarkerOffset(ride.getDouble("meetingLatitude"));
+                                    longitude = setMarkerOffset(ride.getDouble("meetingLongitude"));
+                                } catch (JSONException e) {
+                                    latitude = setMarkerOffset(ride.getDouble("originLatitude"));
+                                    longitude = setMarkerOffset(ride.getDouble("originLongitude"));
+                                }
+
+                                //Keep track of the coordinates that have already been used.
+                                double[] tempCoordinates = new double[] {latitude, longitude};
+                                boolean match;
+                                do {
+                                    match = false;
+                                    for (int j = 0; j < coordinatesList.size(); j++) {
+
+                                        if (tempCoordinates[0] == coordinatesList.get(j)[0] &&
+                                            tempCoordinates[1] == coordinatesList.get(j)[1]) {
+                                            match = true;
+                                        }
+                                    }
+
+                                    if (match) {
+                                        tempCoordinates[0] = setMarkerOffset(tempCoordinates[0]);
+                                        tempCoordinates[1] = setMarkerOffset(tempCoordinates[1]);
+                                    } else {
+                                        coordinatesList.add(tempCoordinates);
+                                    }
+
+                                } while (match);
+
+                                //Grab Marker Values for the Info Window
+                                markerValues.put("tripId", ride.getString("id"));
+                                markerValues.put("originCity", ride.getString("originCity"));
+                                markerValues.put("destCity", ride.getString("destCity"));
+                                markerValues.put("availableSeats", ride.getString("availableSeats"));
+                                markerValues.put("profilePicture", ride.getJSONObject("driver")
+                                        .getString("profilePicture"));
+
+                                //Add Marker to the map, and handle it's Click Event
+                                LatLng latLng = new LatLng(tempCoordinates[0],
+                                                           tempCoordinates[1]);
                                 MarkerOptions markerOptions = new MarkerOptions();
                                 markerOptions.position(latLng);
-                                markerOptions.title(ride.getString("originCity") + " to " +
-                                                    ride.getString("destCity"));
                                 markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET));
 
                                 Marker thisMarker = mMap.addMarker(markerOptions);
-
-                                markers.put(thisMarker, tripId);
-
-                                mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-                                    @Override
-                                    public boolean onMarkerClick(Marker marker) {
-                                        Intent i = new Intent("com.mgsu.knight_rider_android.RideDetails");
-                                        i.putExtra("tripId", markers.get(marker));
-                                        i.putExtra("userLat", userLat);
-                                        i.putExtra("userLng", userLng);
-                                        startActivity(i);
-                                        return false;
-                                    }
-                                });
-                            } catch (JSONException e) {
-                                e.printStackTrace();
+                                markers.put(thisMarker, markerValues);
                             }
+
+                            mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+                                @Override
+                                public boolean onMarkerClick(Marker marker) {
+                                    marker.showInfoWindow();
+                                    return false;
+                                }
+                            });
+
+                            mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
+                                @Override
+                                public View getInfoWindow(Marker marker) {
+                                    return null;
+                                }
+
+                                @Override
+                                public View getInfoContents(Marker marker) {
+
+                                    View v = getLayoutInflater().inflate(R.layout.item_ride_preview, null);
+
+                                    HashMap<String, String> values = new HashMap<>();
+                                    values.putAll(markers.get(marker));
+
+                                    TextView originCity = (TextView) v.findViewById(R.id.originCityTextView);
+                                    originCity.setText(values.get("originCity"));
+
+                                    TextView destinationCity = (TextView) v.findViewById(R.id.destinationCityTextView);
+                                    destinationCity.setText(values.get("destCity"));
+
+                                    TextView seatNumber = (TextView) v.findViewById(R.id.seatNumberTextView);
+                                    if (Integer.parseInt(values.get("availableSeats")) < 10)
+                                        seatNumber.setText("0" + values.get("availableSeats"));
+                                    else
+                                        seatNumber.setText(values.get("availableSeats"));
+
+                                    ImageView driverImage = (ImageView) v.findViewById(R.id.driverImage);
+                                    new DownloadImageTask(driverImage)
+                                            .execute(values.get("profilePicture"));
+
+                                    return v;
+                                }
+                            });
+
+                            mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+                                @Override
+                                public void onInfoWindowClick(Marker marker) {
+                                    HashMap<String, String> values = new HashMap<>();
+                                    values.putAll(markers.get(marker));
+
+                                    Intent i = new Intent("com.mgsu.knight_rider_android.RideDetails");
+                                    i.putExtra("tripId", Integer.parseInt(values.get("tripId")));
+                                    i.putExtra("userLat", userLat);
+                                    i.putExtra("userLng", userLng);
+                                    startActivity(i);
+                                }
+                            });
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
                     }
                 },
@@ -201,7 +322,7 @@ public class FindRide extends AppCompatActivity implements OnMapReadyCallback,
                         VolleyLog.d(error.toString());
                         if (error instanceof TimeoutError) {
                             Toast.makeText(getBaseContext(), "The server timed out. Reloading...",
-                                    Toast.LENGTH_LONG).show();
+                                    Toast.LENGTH_SHORT).show();
                             finish();
                             startActivity(getIntent());
                         }
@@ -224,6 +345,162 @@ public class FindRide extends AppCompatActivity implements OnMapReadyCallback,
         queue.add(findTripRequest);
     }
 
+    private double setMarkerOffset(double coordinate) {
+        double offset = 0;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            offset = current().nextDouble(-MARKER_OFFSET, MARKER_OFFSET + 0.000001);
+        } else {
+            Random rand = new Random();
+            offset = -MARKER_OFFSET + (MARKER_OFFSET + (-MARKER_OFFSET + 0.000001)) * rand.nextDouble();
+        }
+        return coordinate + offset;
+    }
+
+/////* This is to be used if the Map uses a text bar, rather than a dropdownlist. *////
+
+//    private class GeocodeAddressTask extends AsyncTask <Void, Void, Void> {
+//        @Override
+//        protected void onPreExecute() {
+//            searchInput = searchBarInput.getText().toString();
+//            StringBuilder searchBuilder = new StringBuilder();
+//            for (int i = 0; i < searchInput.length(); i++) {
+//                if (searchInput.charAt(i) == ' ')
+//                    searchBuilder.append('+');
+//                else
+//                    searchBuilder.append(searchInput.charAt(i));
+//            }
+//            searchInput = searchBuilder.toString();
+//        }
+//
+//        @Override
+//        protected Void doInBackground(Void... params) {
+//            String url = "https://maps.googleapis.com/maps/api/geocode/json?";
+//            url += "address=" + searchInput;
+//            url += "&key=" + getString(R.string.google_maps_key);
+//
+//            JsonObjectRequest searchRequest = new JsonObjectRequest(Request.Method.GET, url,
+//                    new Response.Listener<JSONObject>() {
+//                        @Override
+//                        public void onResponse(JSONObject response) {
+//                            try {
+//                                storedAddress = response.getJSONArray("results")
+//                                        .getJSONObject(0).getString("formatted_address");
+//
+//                            } catch (JSONException e) {
+//                                e.printStackTrace();
+//                            }
+//                        }
+//                    },
+//                    new Response.ErrorListener() {
+//                        @Override
+//                        public void onErrorResponse(VolleyError error) {
+//                            VolleyLog.d(error.toString());
+//                        }
+//                    }
+//            );
+//            queue.add(searchRequest);
+//            try {
+//                Thread.sleep(2500);
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+//            return null;
+//        }
+//
+//        @Override
+//        protected void onPostExecute(Void aVoid) {
+//            FindMatchingRidesTask task = new FindMatchingRidesTask();
+//            task.execute();
+//        }
+//    }
+//
+//    private class FindMatchingRidesTask extends AsyncTask <Void, Void, Void> {
+//
+//        @Override
+//        protected Void doInBackground(Void... params) {
+//            String url = getString(R.string.url) + "/trips";
+//
+//            JsonArrayRequest findTripRequest = new JsonArrayRequest(Request.Method.GET, url,
+//                    new Response.Listener<JSONArray>() {
+//                        @Override
+//                        public void onResponse(JSONArray response) {
+//                            markers = new HashMap<Marker, Integer>();
+//                            for (int i = 0; i < response.length(); i++) {
+//                                try {
+//                                    JSONObject ride = response.getJSONObject(i);
+//
+//                                    if (ride.getBoolean("completed"))
+//                                        continue;
+//
+//                                    if (!ride.getString("destAddress").contains(storedAddress) &&
+//                                        !storedAddress.contains(ride.getString("destAddress")))
+//                                        continue;
+//
+//                                    VolleyLog.d(response.getJSONObject(i).toString());
+//                                    double latitude = ride.getDouble("originLatitude");
+//                                    double longitude = ride.getDouble("originLongitude");
+//                                    int tripId = ride.getInt("id");
+//
+//                                    LatLng latLng = new LatLng(latitude, longitude);
+//                                    MarkerOptions markerOptions = new MarkerOptions();
+//                                    markerOptions.position(latLng);
+//                                    markerOptions.title(ride.getString("originCity") + " to " +
+//                                            ride.getString("destCity"));
+//                                    markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET));
+//
+//                                    Marker thisMarker = mMap.addMarker(markerOptions);
+//
+//                                    markers.put(thisMarker, tripId);
+//
+//                                    mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+//                                        @Override
+//                                        public boolean onMarkerClick(Marker marker) {
+//                                            Intent i = new Intent("com.mgsu.knight_rider_android.RideDetails");
+//                                            i.putExtra("tripId", markers.get(marker));
+//                                            i.putExtra("userLat", userLat);
+//                                            i.putExtra("userLng", userLng);
+//                                            startActivity(i);
+//                                            return false;
+//                                        }
+//                                    });
+//                                } catch (JSONException e) {
+//                                    e.printStackTrace();
+//                                }
+//                            }
+//                        }
+//                    },
+//                    new Response.ErrorListener() {
+//                        @Override
+//                        public void onErrorResponse(VolleyError error) {
+//                            VolleyLog.d(error.toString());
+//                            if (error instanceof TimeoutError) {
+//                                Toast.makeText(getBaseContext(), "The server timed out. Reloading...",
+//                                        Toast.LENGTH_SHORT).show();
+//                                finish();
+//                                startActivity(getIntent());
+//                            }
+//                        }
+//                    }
+//            )
+//            {
+//                @Override
+//                public Map<String, String> getHeaders() throws AuthFailureError {
+//                    HashMap<String, String> headers = new HashMap<String, String>();
+//                    headers.put("Content-Type", application/json");
+//                    headers.put("Access-Control-Allow-Origin", "*");
+//                    String token = prefs.getString("knight-rider-token", null);
+//                    headers.put("X-Authorization", "Bearer " + token);
+//                    headers.put("Cache-Control", "no-cache");
+//                    return headers;
+//                }
+//            };
+//
+//            queue.add(findTripRequest);
+//
+//            return null;
+//        }
+//    }
+//
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         //Back arrow click handler
@@ -231,6 +508,27 @@ public class FindRide extends AppCompatActivity implements OnMapReadyCallback,
             finish();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public boolean checkLocationPermission() {
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED)
+        {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION))
+            {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION_CODE);
+            }
+            else
+            {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION_CODE);
+            }
+            return false;
+        }
+        else
+        {
+            return true;
+        }
     }
 
     @Override
@@ -278,7 +576,6 @@ public class FindRide extends AppCompatActivity implements OnMapReadyCallback,
 
     @Override
     public void onLocationChanged(Location location) {
-        lastLocation = location;
 
         if(currentLocationMarker != null)
             currentLocationMarker.remove();
@@ -299,6 +596,7 @@ public class FindRide extends AppCompatActivity implements OnMapReadyCallback,
 
         if (client != null)
             LocationServices.FusedLocationApi.removeLocationUpdates(client, this);
+        currentLocationMarker.remove();
     }
 
     @Override
@@ -323,26 +621,7 @@ public class FindRide extends AppCompatActivity implements OnMapReadyCallback,
 
     }
 
-    public boolean checkLocationPermission() {
 
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED)
-        {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION))
-            {
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION_CODE);
-            }
-            else
-            {
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION_CODE);
-            }
-            return false;
-        }
-        else
-        {
-            return true;
-        }
-    }
 
 
 }

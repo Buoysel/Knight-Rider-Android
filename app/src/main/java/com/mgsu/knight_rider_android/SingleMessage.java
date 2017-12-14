@@ -201,9 +201,9 @@ public class SingleMessage extends AppCompatActivity {
 
             //In this case, check if userID matches the current user's id.
             if (Integer.parseInt(singleMessage.get("userId").toString()) == userId )
-                messageView = messageInflater.inflate(R.layout.message_outgoing_item, parent, false);
+                messageView = messageInflater.inflate(R.layout.item_message_outgoing, parent, false);
             else
-                messageView = messageInflater.inflate(R.layout.message_incoming_item, parent, false);
+                messageView = messageInflater.inflate(R.layout.item_message_incoming, parent, false);
 
 
             //Only incoming messages will show the sender's name

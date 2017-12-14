@@ -1,5 +1,6 @@
 package com.mgsu.knight_rider_android;
 
+import android.content.Intent;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
 
@@ -55,7 +56,7 @@ public class UserRegistration extends AppCompatActivity {
 //    private ContactFragment contactFragment;
 //    private VehicleFragment vehicleFragment;
 
-//    boolean includeVehicle = false;
+//    private boolean includeVehicle = false;
 
     private RequestQueue queue;
 
@@ -83,9 +84,6 @@ public class UserRegistration extends AppCompatActivity {
                 register();
             }
         });
-
-        TextView termsTextView = (TextView) findViewById(R.id.termsTextView);
-        termsTextView.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -98,7 +96,7 @@ public class UserRegistration extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 //                nextButtonClick(v);
-                Log.d("RegisDebug", "Next functionality restored");
+                VolleyLog.d("Next functionality restored");
             }
         });
 
@@ -109,6 +107,9 @@ public class UserRegistration extends AppCompatActivity {
             super.onBackPressed(); //Exit the activity
     }
 
+    public void openTerms(View view) {
+        startActivity(new Intent("com.mgsu.knight_rider_android.TermsAndConditions"));
+    }
     /*
     public void nextButtonClick(View view) {
         mViewPager.setCurrentItem(mViewPager.getCurrentItem() + 1);
@@ -124,7 +125,7 @@ public class UserRegistration extends AppCompatActivity {
                     register();
                 }
             });
-TextView) findViewById(R.id.skipVehicleTextView);
+            TextView skipVehicleTextView = (TextView) findViewById(R.id.skipVehicleTextView);
             TextView termsTextView = (TextView) findViewById(R.id.termsTextView);
 //            skipVehicleTextView.setVisibility(View.VISIBLE);
             termsTextView.setVisibility(View.VISIBLE);
@@ -147,7 +148,7 @@ TextView) findViewById(R.id.skipVehicleTextView);
 //        HashMap<String, String> contactValues = contactFragment.getContactValues();
 
         //Merge the account and contact value HashMaps
-        HashMap<String, String> userValues = new HashMap<String,String>();
+        HashMap<String, String> userValues = new HashMap<>();
         userValues.putAll(accountValues);
 //        userValues.putAll(contactValues);
 
@@ -244,7 +245,7 @@ TextView) findViewById(R.id.skipVehicleTextView);
         params.put("password", password);
 
         String url = "http://168.16.222.103:8080/knightrider/auth/login";
-        final String[] id = {""};
+        String[] id = "";
 
         //Prepare the request
         JsonObjectRequest getIDRequest = new JsonObjectRequest(Request.Method.POST, url, new JSONObject(params),
@@ -253,8 +254,8 @@ TextView) findViewById(R.id.skipVehicleTextView);
                     public void onResponse(JSONObject response) {
                         VolleyLog.d("Getting id for creating car...");
                         try {
-                            id[0] = response.getString("user_id");
-                            VolleyLog.d("ID is " + id[0]);
+                            id = response.getString("user_id");
+                            VolleyLog.d("ID is " + id);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -271,7 +272,7 @@ TextView) findViewById(R.id.skipVehicleTextView);
         //add it to the RequestQueue
         queue.add(getIDRequest);
 
-        return id[0];
+        return id;
     }*/
 
     public static class AccountFragment extends Fragment {
@@ -308,7 +309,7 @@ TextView) findViewById(R.id.skipVehicleTextView);
 
             String firstName = firstNameInput.getText().toString();
             String lastName = lastNameInput.getText().toString();
-            String email = emailInput.getText().toString();
+            String email = emailInput.getText().toString().toLowerCase();
             String password = passwordInput.getText().toString();
             String passwordConfirm = passwordConfirmInput.getText().toString();
 

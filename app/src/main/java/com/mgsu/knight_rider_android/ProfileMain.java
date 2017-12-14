@@ -11,11 +11,11 @@ import android.view.View;
 
 public class ProfileMain extends AppCompatActivity {
 
-    String currentView = "";
-    FragmentManager fragmentManager = getFragmentManager();
+    private String currentView = "";
+    private FragmentManager fragmentManager = getFragmentManager();
 
-    ConstraintLayout personalTab;
-    ConstraintLayout vehicleTab;
+    private ConstraintLayout personalTab;
+    private ConstraintLayout vehicleTab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,12 +33,11 @@ public class ProfileMain extends AppCompatActivity {
         ProfilePersonal profilePersonal = new ProfilePersonal();
         fragmentTransaction.replace(android.R.id.content, profilePersonal);
         fragmentTransaction.commit();
-
+        currentView = "personal";
 
         personalTab = (ConstraintLayout) findViewById(R.id.personalTab);
         vehicleTab = (ConstraintLayout) findViewById(R.id.vehiclesTab);
 
-        currentView = "personal";
 
         personalTab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -64,8 +63,8 @@ public class ProfileMain extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void showPersonal() {
-        if (currentView == "personal") {
+    private void showPersonal() {
+        if (currentView.equals("personal")) {
             return;
         } else {
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -81,8 +80,8 @@ public class ProfileMain extends AppCompatActivity {
     }
 
 
-    public void showVehicles() {
-        if (currentView == "vehicles") {
+    private void showVehicles() {
+        if (currentView.equals("vehicles")) {
             return;
         } else {
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
